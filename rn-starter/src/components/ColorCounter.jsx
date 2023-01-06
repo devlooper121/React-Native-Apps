@@ -4,24 +4,14 @@ import { Text, StyleSheet, View, Button } from 'react-native';
 const ColorCounter = (props) => {
   return (
     <View style={styles.viewStyle}>
-      <Text style={styles.textStyle} >{props.color}</Text>
+      <Text style={styles.textStyle} >{props.title}</Text>
       <Button
-        title={`More ${props.color}`}
-        onPress={() => props.setColor(value => {
-          if (value + props.increaseBy < 255) {
-            return value + props.increaseBy
-          }
-          return value;
-        })}
+        title={`More ${props.title}`}
+        onPress={() => props.dispatchFunction({name: props.value, change: 1}) }
       />
       <Button
-        title={`Less ${props.color}`}
-        onPress={() => props.setColor(value => {
-          if (value - props.increaseBy > 0) {
-            return value - props.increaseBy
-          }
-          return value;
-        })}
+        title={`Less ${props.title}`}
+        onPress={() => props.dispatchFunction({name: props.value, change: -1}) }
       />
     </View>
   )

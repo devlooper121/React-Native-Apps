@@ -1,41 +1,66 @@
-import React, { useState } from "react";
-import {StyleSheet, View, Button, FlatList } from 'react-native';
+import React, { useReducer } from "react";
+import { StyleSheet, View, Button, FlatList } from 'react-native';
 import ColorCounter from "../components/ColorCounter";
+//util
+const between = (num, start, end) => {
+  return num > start && num < end;
+}
+// reducer function
+const reducer = (state, action) => {
+  // state == {red: number, green:number, blue: number, changeRate: number}
+  // action == { name: 'red | 'green' | 'blue' , change: 1 | -1, changeRate: number }
+
+  switch (action.name) {
+    case 'RED':
+      if (!between(state.red + action.change * state.changeRate, 0, 255))
+        return state;
+      return { ...state, red: state.red + action.change * state.changeRate };
+    case 'GREEN':
+      if (!between(state.green + action.change * state.changeRate, 0, 255))
+        return state;
+      return { ...state, green: state.green + action.change * state.changeRate };
+    case 'BLUE':
+      if (!between(state.blue + action.change * state.changeRate, 0, 255))
+        return state;
+      return { ...state, blue: state.blue + action.change * state.changeRate };
+    case 'INC':
+      return { ...state, changeRate: action.changeRate };
+    default:
+      return state;
+  }
+}
 
 const SquareScreen = () => {
-  
-  const [red, setRed] = useState(0);
-  const [green, setGreen] = useState(0);
-  const [blue, setBlue] = useState(0);
-  const color = `rgb(${red}, ${green}, ${blue})`;
+  const [state, dispatch] = useReducer(reducer, { red: 0, green: 0, blue: 0, changeRate: 10 });
+  const color = `rgb(${state.red}, ${state.green}, ${state.blue})`;
   return (
     <View style={styles.viewStyle}>
       <ColorCounter
-        color="Red"
-        setColor={setRed}
-        increaseBy={10}
+        title="Red"
+        value="RED"
+        dispatchFunction={dispatch}
       />
       <ColorCounter
-        color="Green"
-        setColor={setGreen}
-        increaseBy={10}
+        title="Green"
+        value="GREEN"
+        dispatchFunction={dispatch}
       />
       <ColorCounter
-        color="Blue"
-        setColor={setBlue}
-        increaseBy={10}
+        title="Blue"
+        value="BLUE"
+        dispatchFunction={dispatch}
       />
-      <View style={{...styles.box, backgroundColor: color}}/>
-      
+      <View style={{ ...styles.box, backgroundColor: color }} />
+
     </View>
   )
 }
 const getRandomColor = () => {
-    const red = Math.floor(Math.random()*256);
-    const green = Math.floor(Math.random()*256);
-    const blue = Math.floor(Math.random()*256);
-    const opacity = Math.floor(Math.random());
-    return `rgb(${red}, ${green}, ${blue})`;
+  const red = Math.floor(Math.random() * 256);
+  const green = Math.floor(Math.random() * 256);
+  const blue = Math.floor(Math.random() * 256);
+  const opacity = Math.floor(Math.random());
+  return `rgb(${red}, ${green}, ${blue})`;
 }
 const styles = StyleSheet.create({
   textStyle: {
